@@ -51,18 +51,30 @@ export default function App() {
 
       const data = await response.json();
       
-      if (data.status === 'success') {
+      // ✅ ДОДАЛИ КРАЩУ ПЕРЕВІРКУ: перевіряємо наявність stats у відповіді
+      if (data.status === 'success' || data.stats) {
         console.log('Файл успішно оброблено:', data.filename);
-        setFileStats(data.stats);     
+        
+        // Фолбек на випадок, якщо бекенд повернув назви полів з маленької або іншої літери
+        setFileStats({
+          totalLines: data.stats?.totalLines ?? data.stats?.total_lines ?? 0,
+          uniqueLines: data.stats?.uniqueLines ?? data.stats?.unique_lines ?? 0,
+          duplicates: data.stats?.duplicates ?? 0,
+          compressionRate: data.stats?.compressionRate ?? data.stats?.compression_rate ?? 0
+        });     
+        
         setFileAttached(true);        
         setChatKey(prev => prev + 1); 
+      } else {
+        throw new Error('Бекенд не повернув статистику файлу');
       }
     } catch (error) {
       console.error('Не вдалося надіслати файл:', error);
-      alert('Помилка сервера при завантаженні файлу.');
+      alert('Помилка сервера або довге прокидання контейнера. Спробуйте завантажити файл ще раз.');
       setFileAttached(false);
       setFileStats(null);
     } finally {
+      // ✅ Цей блок виконується ЗАВЖДИ, що гарантує зникнення екрана завантаження
       setIsFileUploading(false);
     }
   };
@@ -81,7 +93,8 @@ export default function App() {
       <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '320px', flexShrink: 0 }}>
         <FileUploader onFileSelect={handleFileSelect} apiUrl={API_URL} />
 
-        {(fileAttached || isFileUploading) && (
+        {/* ✅ ОПТИМІЗУВАЛИ УМОВУ: блок показується, якщо йде завантаження АБО якщо вже є статистика */}
+        {(isFileUploading || fileStats) && (
           <div style={{
             backgroundColor: '#1e1e24', 
             borderRadius: '12px',
@@ -96,7 +109,7 @@ export default function App() {
           }}>
             {isFileUploading ? (
               <div style={{ textAlign: 'center', color: '#9ca3af', padding: '20px 0' }}>
-                <div style={{ fontSize: '24px', animation: 'spin 1s linear infinite', marginBottom: '10px' }}>⌛</div>
+                <div style={{ fontSize: '24px', marginBottom: '10px' }}>⌛</div>
                 <div style={{ fontSize: '14px', fontWeight: 500 }}>Оновлення аналітики...</div>
               </div>
             ) : fileStats ? (
