@@ -1,16 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { Paperclip, X, FileText, Plus } from 'lucide-react';
 
+// ✅ ТИПІЗУЄМО ПРОПСИ: Додаємо apiUrl у список вхідних параметрів
 type FileUploaderProps = {
   onFileSelect: (file: File | null) => void;
+  apiUrl?: string; // Робимо необов'язковим для безпеки (якщо немає — підставимо локальний)
 };
 
-export const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
+export const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect, apiUrl }) => {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // 💥 ОЦЕЙ РЯДОК БУВ ПРОПУЩЕНИЙ! Оголошуємо стан для скидання інпуту:
+  // Оголошуємо стан для скидання інпуту:
   const [inputKey, setInputKey] = useState<number>(0);
+
+  // Визначаємо фінальний URL для запиту (беремо з пропсів або фолбекаємось на localhost)
+  const currentApiUrl = apiUrl || 'http://localhost:8000';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -32,9 +37,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect }) => {
     // Змінюємо ключ, щоб React перестворив інпут з нуля і "забув" старий файл
     setInputKey(prev => prev + 1);
 
-   
     try {
-      const response = await fetch('http://localhost:8000/api/clear', {
+      // ✅ ЗАМІНИЛИ ЛОКАЛЬНИЙ ШЛЯХ НА ДИНАМІЧНИЙ URL З БАЗИ ЗМІННИХ
+      const response = await fetch(`${currentApiUrl}/api/clear`, {
         method: 'POST',
       });
       

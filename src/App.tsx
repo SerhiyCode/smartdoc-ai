@@ -79,7 +79,7 @@ export default function App() {
   return (
     <div className="app-container" style={{ display: 'flex', gap: '24px', padding: '24px', fontFamily: 'sans-serif', backgroundColor: '#121214', minHeight: '100vh' }}>
       <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '320px', flexShrink: 0 }}>
-        <FileUploader onFileSelect={handleFileSelect} />
+        <FileUploader onFileSelect={handleFileSelect} apiUrl={API_URL} />
 
         {(fileAttached || isFileUploading) && (
           <div style={{

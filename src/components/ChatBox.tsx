@@ -21,7 +21,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading,
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
 
-  // Визначаємо фінальний URL для запитів: беремо з пропсів, або фолбекаємось на localhost
   const currentApiUrl = apiUrl || 'http://localhost:8000';
 
   const suggestedprompts = ['Зроби короткий висновок', 'Знайди помилки ERROR', 'Згенеруй QA-тест'];
@@ -43,7 +42,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading,
     setIsLoading(true);
 
     try {
-      // ✅ ЗАМІНИЛИ ЛОКАЛЬНИЙ ШЛЯХ НА УНІВЕРСАЛЬНИЙ ЗМІННИЙ ШЛЯХ
       const response = await fetch(`${currentApiUrl}/api/chat`, {
         method: 'POST',
         headers: {
