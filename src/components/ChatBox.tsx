@@ -9,15 +9,20 @@ type Message = {
   text: string;
 };
 
+
 type ChatBoxProps = {
   fileAttached: boolean; 
   isFileUploading: boolean;
+  apiUrl?: string;  
 };
 
-export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading }) => {
+export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading, apiUrl }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+
+  // Визначаємо фінальний URL для запитів: беремо з пропсів, або фолбекаємось на localhost
+  const currentApiUrl = apiUrl || 'http://localhost:8000';
 
   const suggestedprompts = ['Зроби короткий висновок', 'Знайди помилки ERROR', 'Згенеруй QA-тест'];
 
@@ -38,7 +43,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading 
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/chat', {
+      // ✅ ЗАМІНИЛИ ЛОКАЛЬНИЙ ШЛЯХ НА УНІВЕРСАЛЬНИЙ ЗМІННИЙ ШЛЯХ
+      const response = await fetch(`${currentApiUrl}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,14 +71,13 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading 
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        text: '❌ Не вдалося зв\'язатися з Python-бекендом. Переконайся, що сервер запущенний командою uvicorn.'
+        text: '❌ Не вдалося зв\'язатися з Python-бекендом. Переконайся, що сервер розгорнутий на Render або запущений локально.'
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
-      // ✅ ПРАВИЛЬНИЙ ФІКС:
-      setIsLoading(false); // Спочатку вимикаємо індикатор завантаження
+      setIsLoading(false); 
     }
-  }; // <-- ОЦЮ ДУЖКУ БУЛО СТЕРТО, ТЕПЕР ВОНА НА МІСЦІ!
+  };
 
   const handleSuggestedClick = (prompt: string) => {
     setInputValue(prompt);
@@ -125,7 +130,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ fileAttached, isFileUploading 
                   {msg.role === 'assistant' ? 'SmartDoc AI' : 'Ви'}
                 </span>
                 
-                {/* 🔥 ГОЛОВНИЙ ФІКС ТУТ: Використовуємо ReactMarkdown для автоматичного парсингу списків та жирного шрифту */}
                 <div className="chat-message__text chat-markdown-content">
                   <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>

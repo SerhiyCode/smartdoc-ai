@@ -10,6 +10,9 @@ type FileStats = {
   compressionRate: number;
 };
 
+// Визначаємо адресу API: якщо є змінна оточення — беремо її, інакше працюємо локально
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export default function App() {
   const [fileAttached, setFileAttached] = useState<boolean>(false);
   const [isFileUploading, setIsFileUploading] = useState<boolean>(false);
@@ -23,7 +26,7 @@ export default function App() {
       setChatKey(prev => prev + 1);
       
       try {
-        await fetch('http://localhost:8000/api/clear', { method: 'POST' });
+        await fetch(`${API_URL}/api/clear`, { method: 'POST' });
       } catch (err) {
         console.error('Не вдалося очистити папку на бекенді:', err);
       }
@@ -37,7 +40,7 @@ export default function App() {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:8000/api/upload', {
+      const response = await fetch(`${API_URL}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -64,10 +67,9 @@ export default function App() {
     }
   };
 
-  
   const handleDownloadCleaned = async () => {
     try {
-      window.location.href = 'http://localhost:8000/api/download-cleaned';
+      window.location.href = `${API_URL}/api/download-cleaned`;
     } catch (error) {
       console.error('Помилка скачування:', error);
       alert('Не вдалося завантажити очищений файл.');
@@ -77,8 +79,6 @@ export default function App() {
   return (
     <div className="app-container" style={{ display: 'flex', gap: '24px', padding: '24px', fontFamily: 'sans-serif', backgroundColor: '#121214', minHeight: '100vh' }}>
       <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '320px', flexShrink: 0 }}>
-        
-
         <FileUploader onFileSelect={handleFileSelect} />
 
         {(fileAttached || isFileUploading) && (
@@ -94,15 +94,12 @@ export default function App() {
             minHeight: '180px',
             justifyContent: isFileUploading ? 'center' : 'flex-start'
           }}>
-            
             {isFileUploading ? (
-              
               <div style={{ textAlign: 'center', color: '#9ca3af', padding: '20px 0' }}>
                 <div style={{ fontSize: '24px', animation: 'spin 1s linear infinite', marginBottom: '10px' }}>⌛</div>
                 <div style={{ fontSize: '14px', fontWeight: 500 }}>Оновлення аналітики...</div>
               </div>
             ) : fileStats ? (
-              /* Звичайний вивід готової статистики */
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #2a2a32', paddingBottom: '10px' }}>
                   <BarChart2 size={18} style={{ color: '#3b82f6' }} />
@@ -176,6 +173,7 @@ export default function App() {
         key={chatKey} 
         fileAttached={fileAttached} 
         isFileUploading={isFileUploading} 
+        apiUrl={API_URL} 
       />
     </div>
   );
