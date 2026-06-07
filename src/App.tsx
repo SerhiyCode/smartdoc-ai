@@ -76,7 +76,7 @@ export default function App() {
 
   return (
     <div className="app-container" style={{ display: 'flex', gap: '24px', padding: '24px', fontFamily: 'sans-serif', backgroundColor: '#121214', minHeight: '100vh' }}>
-      <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '320px', shrink: 0 }}>
+      <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '320px', flexShrink: 0 }}>
         
 
         <FileUploader onFileSelect={handleFileSelect} />
@@ -140,7 +140,7 @@ export default function App() {
                     color: '#60a5fa',
                     border: '1px solid rgba(59, 130, 246, 0.2)'
                   }}>
-                    <ShieldCheck size={16} style={{ color: '#3b82f6', shrink: 0 }} />
+                    <ShieldCheck size={16} style={{ color: '#3b82f6', flexShrink: 0 }} />
                     <span>Файл оптимізовано на <strong style={{ color: '#ffffff' }}>{fileStats.compressionRate}%</strong>!</span>
                   </div>
                 )}
