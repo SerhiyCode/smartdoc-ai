@@ -1,73 +1,31 @@
-# React + TypeScript + Vite
+# SmartDoc AI 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[SmartDoc AI](https://smartdoc-ai-lyart.vercel.app/) — це інтелектуальний веб-додаток для автоматичної обробки документів, аналізу даних та очищення файлів від дублікатів.
 
-Currently, two official plugins are available:
+## 🛠 Технологічний стек
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend:** React, TypeScript, Vite, Vercel
+- **Backend:** Python, FastAPI, Render
+- **Infrastructure:** CI/CD через GitHub, автоматичний деплой на Vercel та Render
 
-## React Compiler
+## 🌐 Як працює додаток
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Проєкт складається з двох частин, які працюють синхронно в хмарі:
 
-## Expanding the ESLint configuration
+1. **Frontend (Vercel):** Інтерфейс користувача, де ти обираєш файл. Він автоматично відправляє запит на API.
+2. **Backend (Render):** Обробляє файл, видаляє дублікати, рахує статистику і повертає готовий результат назад.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Як користуватися програмою
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. **Перехід за посиланням:** Відкрий додаток за посиланням: [https://smartdoc-ai-lyart.vercel.app/]( https://smartdoc-ai-lyart.vercel.app/ )
+2. **Завантаження файлу:**
+   - Натисни кнопку "Завантажити документи" або іконку "+".
+   - Обери файл формату `.txt`, `.json`, `.log` або `.csv`.
+3. **Обробка:**
+   - Дочекайся завершення аналізу (статус "Оновлення аналітики...").
+   - Сервер автоматично опрацює файл, і ти побачиш статистику (кількість рядків, унікальних записів, дублікатів).
+4. **Завантаження результату:**
+   - Після завершення обробки натисни кнопку "📥 Завантажити очищений файл".
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+*Проєкт розроблено для автоматизації роботи з документами.*
